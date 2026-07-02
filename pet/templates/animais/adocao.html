@@ -20,107 +20,81 @@
 
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
-
-    <div class="container">
-
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+      <div class="container">
         <!-- LOGO -->
         <a class="navbar-brand logo" href="{% url 'index' %}">
-            🐾 Amigos de Patas
+          <img src="{% static 'logo.png' %}" alt="Logo" />
         </a>
 
         <!-- MENU MOBILE -->
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#menu">
-
-            <span class="navbar-toggler-icon"></span>
-
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#menu"
+        >
+          <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- MENU -->
         <div class="collapse navbar-collapse" id="menu">
+          <!-- LINKS PRINCIPAIS -->
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'index' %}"> Início </a>
+            </li>
 
-            <!-- LINKS PRINCIPAIS -->
-            <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'listar_animais' %}">
+                Animais
+              </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">
-                        Início
-                    </a>
-                </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'sobre_nos' %}"> Sobre </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'listar_animais' %}">
-                        Animais
-                    </a>
-                </li>
+            <!-- APENAS ADMIN -->
+            {% if user.is_authenticated and user.is_superuser %}
 
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'cadastrar_animal' %}">
+                ➕ Cadastrar Animal
+              </a>
+            </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'sobre_nos' %}">
-                        Sobre
-                    </a>
-                </li>
+            {% endif %}
+          </ul>
 
-                <!-- APENAS ADMIN -->
-                {% if user.is_authenticated and user.is_superuser %}
+          <!-- LADO DIREITO -->
+          <div class="d-flex align-items-center gap-2">
+            <!-- VISITANTE -->
+            {% if not user.is_authenticated %}
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'cadastrar_animal' %}">
-                        ➕ Cadastrar Animal
-                    </a>
-                </li>
+            <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+              Entrar
+            </a>
 
-                {% endif %}
+            <a href="{% url 'como_ajudar' %}" class="btn btn-doar"> ❤️ Doar </a>
 
-            </ul>
+            <!-- LOGADO -->
+            {% else %}
 
-            <!-- LADO DIREITO -->
-            <div class="d-flex align-items-center gap-2">
+            <span class="text-muted me-2"> 👋 {{ user.username }} </span>
 
-                <!-- VISITANTE -->
-                {% if not user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+              Sair
+            </a>
 
-                    <a href="{% url 'login' %}"
-                       class="btn btn-outline-secondary">
-
-                        Entrar
-
-                    </a>
-
-                    <a href="{% url 'como_ajudar' %}"
-                       class="btn btn-doar">
-
-                        ❤️ Doar
-
-                    </a>
-
-                <!-- LOGADO -->
-                {% else %}
-
-                    <span class="text-muted me-2">
-                        👋 {{ user.username }}
-                    </span>
-
-                    <a href="{% url 'logout' %}"
-                       class="btn btn-outline-danger">
-
-                        Sair
-
-                    </a>
-
-                {% endif %}
-
-            </div>
-
+            {% endif %}
+          </div>
         </div>
+      </div>
+    </nav>
 
-    </div>
 
-</nav>
 <!-- HERO -->
 <section class="form-hero">
 
