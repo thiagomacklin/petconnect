@@ -1,0 +1,401 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Quero Adotar | Amigos de Patas</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+
+    <div class="container">
+
+        <!-- LOGO -->
+        <a class="navbar-brand logo" href="{% url 'index' %}">
+            🐾 Amigos de Patas
+        </a>
+
+        <!-- MENU MOBILE -->
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <!-- MENU -->
+        <div class="collapse navbar-collapse" id="menu">
+
+            <!-- LINKS PRINCIPAIS -->
+            <ul class="navbar-nav mx-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">
+                        Início
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listar_animais' %}">
+                        Animais
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'sobre_nos' %}">
+                        Sobre
+                    </a>
+                </li>
+
+                <!-- APENAS ADMIN -->
+                {% if user.is_authenticated and user.is_superuser %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cadastrar_animal' %}">
+                        ➕ Cadastrar Animal
+                    </a>
+                </li>
+
+                {% endif %}
+
+            </ul>
+
+            <!-- LADO DIREITO -->
+            <div class="d-flex align-items-center gap-2">
+
+                <!-- VISITANTE -->
+                {% if not user.is_authenticated %}
+
+                    <a href="{% url 'login' %}"
+                       class="btn btn-outline-secondary">
+
+                        Entrar
+
+                    </a>
+
+                    <a href="{% url 'como_ajudar' %}"
+                       class="btn btn-doar">
+
+                        ❤️ Doar
+
+                    </a>
+
+                <!-- LOGADO -->
+                {% else %}
+
+                    <span class="text-muted me-2">
+                        👋 {{ user.username }}
+                    </span>
+
+                    <a href="{% url 'logout' %}"
+                       class="btn btn-outline-danger">
+
+                        Sair
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+<!-- HERO -->
+<section class="form-hero">
+
+    <div class="container text-center">
+
+        <span class="subtitulo">PROCESSO DE ADOÇÃO</span>
+
+        <h1 class="titulo">Quero adotar este animal</h1>
+
+        <p>Preencha suas informações para iniciar o processo de adoção responsável.</p>
+
+    </div>
+
+</section>
+
+<!-- ANIMAL -->
+<section class="container">
+
+<div class="card shadow-lg border-0 rounded-4 mb-5">
+
+<div class="row g-0">
+
+<div class="col-lg-5">
+
+    {% if animal.foto1 and animal.foto1.name %}
+        <img src="{{ animal.foto1.url }}"
+             class="img-fluid rounded-start h-100"
+             style="object-fit:cover;">
+    {% else %}
+        <img src="https://via.placeholder.com/700x600?text=Sem+Foto"
+             class="img-fluid rounded-start h-100"
+             style="object-fit:cover;">
+    {% endif %}
+
+</div>
+
+<div class="col-lg-7">
+
+<div class="card-body p-5">
+
+    <span class="badge bg-success mb-3">
+        {{ animal.get_status_display }}
+    </span>
+
+    <h2>
+        {% if animal.tipo == 'CAO' %} 🐶 {% else %} 🐱 {% endif %}
+        {{ animal.nome }}
+    </h2>
+
+    <p class="text-muted">
+        {{ animal.get_sexo_display }} • {{ animal.idade }} ano{{ animal.idade|pluralize }} • {{ animal.get_porte_display }}
+    </p>
+
+    <p>
+        {{ animal.descricao|default:"Sem descrição disponível." }}
+    </p>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+            <strong>Energia:</strong><br>
+            {{ animal.get_nivel_energia_display|default:"Não informado" }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <strong>Espaço:</strong><br>
+            {{ animal.get_necessidade_espaco_display|default:"Não informado" }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <strong>Crianças:</strong><br>
+            {{ animal.get_convive_criancas_display|default:"Não informado" }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <strong>Outros animais:</strong><br>
+            {{ animal.get_convive_animais_display|default:"Não informado" }}
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FORMULÁRIO -->
+<section class="container pb-5">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-10">
+
+<div class="form-card">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<h3 class="mb-4">👤 Seus dados</h3>
+
+<div class="row g-3">
+
+<div class="col-md-6">
+<label class="form-label">Nome completo</label>
+<input type="text" name="nome" class="form-control" required>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">CPF</label>
+<input type="text" name="cpf" class="form-control" required>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">E-mail</label>
+<input type="email" name="email" class="form-control" required>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Telefone</label>
+<input type="text" name="telefone" class="form-control" required>
+</div>
+
+</div>
+
+<hr class="my-5">
+
+<h3 class="mb-4">🏠 Sua moradia</h3>
+
+<div class="row g-3">
+
+<div class="col-md-4">
+<label class="form-label">Tipo de residência</label>
+<select name="residencia" class="form-select">
+    <option value="">Selecione</option>
+    <option>Casa</option>
+    <option>Apartamento</option>
+    <option>Chácara</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Possui quintal?</label>
+<select name="quintal" class="form-select">
+    <option>Selecione</option>
+    <option>Sim</option>
+    <option>Não</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Possui crianças?</label>
+<select name="criancas" class="form-select">
+    <option>Selecione</option>
+    <option>Sim</option>
+    <option>Não</option>
+</select>
+</div>
+
+</div>
+
+<hr class="my-5">
+
+<h3 class="mb-4">🐾 Experiência</h3>
+
+<div class="row g-3">
+
+<div class="col-md-6">
+<label class="form-label">Já teve animais?</label>
+<select name="experiencia" class="form-select">
+    <option>Nunca</option>
+    <option>Pouca experiência</option>
+    <option>Muita experiência</option>
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Tempo disponível</label>
+<select name="tempo" class="form-select">
+    <option>Baixo</option>
+    <option>Médio</option>
+    <option>Alto</option>
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Possui outros animais?</label>
+<select name="outros_animais" class="form-select">
+    <option>Não</option>
+    <option>Sim</option>
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Perfil desejado</label>
+<select name="perfil" class="form-select">
+    <option>Calmo</option>
+    <option>Moderado</option>
+    <option>Ativo</option>
+</select>
+</div>
+
+</div>
+
+<hr class="my-5">
+
+<h3 class="mb-4">❤️ Conte sobre você</h3>
+
+<textarea name="descricao" class="form-control" rows="5"></textarea>
+
+<!-- COMPATIBILIDADE IA -->
+{% if compatibilidade %}
+
+<div class="alert alert-info mt-4">
+
+    <h5>🤖 Resultado da IA</h5>
+
+    <pre style="white-space: pre-wrap;">{{ compatibilidade }}</pre>
+
+</div>
+
+{% else %}
+
+<div class="card bg-light border-0 p-4 mt-4 mb-4">
+
+    <h4>🤖 Compatibilidade IA</h4>
+
+    <div class="progress">
+        <div class="progress-bar" style="width:0%"></div>
+    </div>
+
+</div>
+
+{% endif %}
+
+<!-- BOTÕES -->
+<div class="d-flex gap-3">
+
+<button type="submit" class="btn btn-principal flex-fill">
+❤️ Enviar Solicitação
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+
+<div class="container text-center">
+
+<h4>🐾 Amigos de Patas</h4>
+<p>Cuidando, protegendo e encontrando lares.</p>
+
+</div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
