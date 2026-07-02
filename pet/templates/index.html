@@ -172,9 +172,17 @@
               <h4>{{ animal.nome }}</h4>
 
               <p>
-                {{ animal.idade }} ano{{ animal.idade|pluralize:"s" }} • {{
-                animal.get_status_display }}
-              </p>
+    {{ animal.idade }} ano{{ animal.idade|pluralize }}
+    •
+
+    {% if animal.status == 'DISPONIVEL' %}
+        Disponível
+    {% elif animal.status == 'TRATAMENTO' %}
+        Em tratamento
+    {% else %}
+        Adotado
+    {% endif %}
+</p>
 
               <a
                 href="{% url 'adotar_animal' animal.id %}"
