@@ -197,9 +197,10 @@ def adotar_animal(request, id):
 
     if request.method == "POST":
 
-        # -------------------------
-        # 1. SALVA ADOTANTE
-        # -------------------------
+        # =====================================
+        # SALVA ADOTANTE
+        # =====================================
+
         adotante = Adotante.objects.create(
             animal=animal,
 
@@ -220,88 +221,206 @@ def adotar_animal(request, id):
             descricao=request.POST.get("descricao"),
         )
 
-        # -------------------------
-        # 2. MONTA PERFIS PARA IA
-        # -------------------------
+        # =====================================
+        # VALIDAÇÃO LOCAL
+        # =====================================
 
-        perfil_animal = f"""
-        Nome: {animal.nome}
-        Energia: {animal.nivel_energia}
-        Espaço: {animal.necessidade_espaco}
-        Crianças: {animal.convive_criancas}
-        Outros animais: {animal.convive_animais}
-        Descrição: {animal.caracteristicas}
-        """
+        texto = f"""
+        {adotante.perfil}
+        {adotante.descricao}
+        """.lower()
 
-        perfil_adotante = f"""
-        Residência: {adotante.residencia}
-        Quintal: {adotante.quintal}
-        Crianças: {adotante.criancas}
-        Experiência: {adotante.experiencia}
-        Tempo disponível: {adotante.tempo}
-        Outros animais: {adotante.outros_animais}
-        Perfil desejado: {adotante.perfil}
-        """
+        palavras_proibidas = [
+            "matar",
+            "bater",
+            "espancar",
+            "abandonar",
+            "rinha",
+            "caçar",
+            "caça",
+            "veneno",
+            "machucar",
+            "maltratar",
+            "maus tratos",
+            "agredir",
+            "violência",
+        ]
 
-        # -------------------------
-        # 3. CHAMA OPENAI
-        # -------------------------
+        if any(p in texto for p in palavras_proibidas):
 
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            resultado = {
+                "status": "REPROVADO",
+                "compatibilidade": 0,
+                "risco": "ALTO",
+                "justificativa":
+                    "Foram identificados termos incompatíveis "
+                    "com adoção responsável.",
+                "recomendacao":
+                    "A adoção não foi aprovada. "
+                    "Busque orientação sobre guarda responsável."
+            }
 
-        prompt = f"""
-        Você é um sistema de compatibilidade entre adotantes e animais.
+        else:
 
-        Compare os dois perfis abaixo e gere:
+            perfil_animal = f"""
+            Nome: {animal.nome}
+            Energia: {animal.nivel_energia}
+            Espaço: {animal.necessidade_espaco}
+            Crianças: {animal.convive_criancas}
+            Outros animais: {animal.convive_animais}
+            Características: {animal.caracteristicas}
+            """
 
-        1. Uma nota de compatibilidade de 0 a 100
-        2. Um resumo curto explicando a compatibilidade
+            perfil_adotante = f"""
+            Residência: {adotante.residencia}
+            Quintal: {adotante.quintal}
+            Crianças: {adotante.criancas}
+            Experiência: {adotante.experiencia}
+            Tempo disponível: {adotante.tempo}
+            Outros animais: {adotante.outros_animais}
+            Perfil desejado: {adotante.perfil}
+            Descrição: {adotante.descricao}
+            """
 
-        Responda obrigatoriamente neste formato:
-        Compatibilidade: XX%
-        Resumo: texto aqui
+            prompt = f"""
+Você é especialista em:
 
-        PERFIL ANIMAL:
-        {perfil_animal}
+- proteção animal;
+- adoção responsável;
+- comportamento animal;
+- bem-estar animal.
 
-        PERFIL ADOTANTE:
-        {perfil_adotante}
-        """
+Sua prioridade absoluta é proteger o animal.
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+Analise os perfis.
+
+Detecte:
+
+- maus-tratos;
+- violência;
+- abandono;
+- negligência;
+- exploração;
+- rinhas;
+- caça;
+- agressividade;
+- ameaças;
+- irresponsabilidade;
+- respostas ofensivas;
+- respostas aleatórias;
+- tentativas de burlar o sistema.
+
+Caso identifique qualquer situação de risco,
+a adoção deve ser REPROVADA.
+
+Avalie também:
+
+- compatibilidade comportamental;
+- ambiente;
+- espaço;
+- experiência;
+- família;
+- tempo disponível;
+- capacidade de cuidado.
+
+Retorne APENAS JSON.
+
+Exemplo:
+
+{{
+"status":"APROVADO",
+"compatibilidade":85,
+"risco":"BAIXO",
+"justificativa":"texto",
+"recomendacao":"texto"
+}}
+
+ANIMAL:
+{perfil_animal}
+
+ADOTANTE:
+{perfil_adotante}
+"""
+
+            try:
+
+                client = OpenAI(
+                    api_key=os.getenv("OPENAI_API_KEY")
+                )
+
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+
+                    response_format={
+                        "type": "json_object"
+                    },
+
+                    temperature=0.2,
+
+                    messages=[
+                        {
+                            "role": "system",
+                            "content":
+                                "Você é um especialista em adoção responsável."
+                        },
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ]
+                )
+
+                resultado = json.loads(
+                    response.choices[0].message.content
+                )
+
+            except Exception as e:
+
+                print(e)
+
+                resultado = {
+                    "status": "REPROVADO",
+                    "compatibilidade": 0,
+                    "risco": "ALTO",
+                    "justificativa":
+                        "Não foi possível validar a resposta da IA.",
+                    "recomendacao":
+                        "Realizar nova avaliação."
+                }
+
+        # =====================================
+        # SALVA
+        # =====================================
+
+        adotante.compatibilidade_nota = resultado.get(
+            "compatibilidade",
+            0
         )
 
-        resultado = response.choices[0].message.content
+        adotante.compatibilidade_relatorio = json.dumps(
+            resultado,
+            ensure_ascii=False,
+            indent=2
+        )
 
-        # -------------------------
-        # 4. EXTRAI NOTA
-        # -------------------------
-
-        match = re.search(r"(\d{1,3})\s*%", resultado)
-
-        nota = int(match.group(1)) if match else None
-
-        # -------------------------
-        # 5. SALVA IA NO BANCO
-        # -------------------------
-
-        adotante.compatibilidade_nota = nota
-        adotante.compatibilidade_relatorio = resultado
         adotante.save()
 
-        # (opcional) mostrar resultado
-        return render(request, "animais/adocao.html", {
-            "animal": animal,
-            "compatibilidade": resultado
-        })
+        return render(
+            request,
+            "animais/adocao.html",
+            {
+                "animal": animal,
+                "compatibilidade": resultado
+            }
+        )
 
-    return render(request, "animais/adocao.html", {
-        "animal": animal
-    })
+    return render(
+        request,
+        "animais/adocao.html",
+        {
+            "animal": animal
+        }
+    )
 
 
 def gerar_codigo_compatibilidade(perfil):
