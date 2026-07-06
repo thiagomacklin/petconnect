@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -5,190 +6,244 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Quero Adotar | Amigos de Patas</title>
+    <title>Quero Adotar | Pet Connect 5.0</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
-      <div class="container">
-        <!-- LOGO -->
+<!-- ========================================= -->
+<!-- NAVBAR -->
+<!-- ========================================= -->
+
+<nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+
+    <div class="container">
+
         <a class="navbar-brand logo" href="{% url 'index' %}">
-          <img src="{% static 'logo.png' %}" alt="Logo" />
+            <img src="{% static 'logo.png' %}" alt="Logo">
         </a>
 
-        <!-- MENU MOBILE -->
         <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu"
-        >
-          <span class="navbar-toggler-icon"></span>
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#menu">
+
+            <span class="navbar-toggler-icon"></span>
+
         </button>
 
-        <!-- MENU -->
         <div class="collapse navbar-collapse" id="menu">
-          <!-- LINKS PRINCIPAIS -->
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'index' %}"> Início </a>
-            </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'listar_animais' %}">
-                Animais
-              </a>
-            </li>
+            <ul class="navbar-nav mx-auto">
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'sobre_nos' %}"> Sobre </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">
+                        Início
+                    </a>
+                </li>
 
-            <!-- APENAS ADMIN -->
-            {% if user.is_authenticated and user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listar_animais' %}">
+                        Animais
+                    </a>
+                </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cadastrar_animal' %}">
-                ➕ Cadastrar Animal
-              </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'sobre_nos' %}">
+                        Sobre
+                    </a>
+                </li>
 
-            {% endif %}
-          </ul>
+                {% if user.is_authenticated and user.is_superuser %}
 
-          <!-- LADO DIREITO -->
-          <div class="d-flex align-items-center gap-2">
-            <!-- VISITANTE -->
-            {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cadastrar_animal' %}">
+                        ➕ Cadastrar Animal
+                    </a>
+                </li>
 
-            <a href="{% url 'login' %}" class="btn btn-outline-secondary">
-              Entrar
-            </a>
+                {% endif %}
 
-            <a href="{% url 'como_ajudar' %}" class="btn btn-doar"> ❤️ Doar </a>
+            </ul>
 
-            <!-- LOGADO -->
-            {% else %}
+            <div class="d-flex align-items-center gap-2">
 
-            <span class="text-muted me-2"> 👋 {{ user.username }} </span>
+                {% if not user.is_authenticated %}
 
-            <a href="{% url 'logout' %}" class="btn btn-outline-danger">
-              Sair
-            </a>
+                    <a href="{% url 'login' %}"
+                       class="btn btn-outline-secondary">
+                        Entrar
+                    </a>
 
-            {% endif %}
-          </div>
+                    <a href="{% url 'como_ajudar' %}"
+                       class="btn btn-doar">
+                        ❤️ Doar
+                    </a>
+
+                {% else %}
+
+                    <span class="text-muted">
+                        👋 {{ user.username }}
+                    </span>
+
+                    <a href="{% url 'logout' %}"
+                       class="btn btn-outline-danger">
+                        Sair
+                    </a>
+
+                {% endif %}
+
+            </div>
+
         </div>
-      </div>
-    </nav>
+
+    </div>
+
+</nav>
 
 
+<!-- ========================================= -->
 <!-- HERO -->
+<!-- ========================================= -->
+
 <section class="form-hero">
 
     <div class="container text-center">
 
-        <span class="subtitulo">PROCESSO DE ADOÇÃO</span>
+        <span class="subtitulo">
+            PROCESSO DE ADOÇÃO
+        </span>
 
-        <h1 class="titulo">Quero adotar este animal</h1>
+        <h1 class="titulo">
+            Quero adotar este animal
+        </h1>
 
-        <p>Preencha suas informações para iniciar o processo de adoção responsável.</p>
+        <p>
+            Preencha suas informações para iniciar
+            o processo de adoção responsável.
+        </p>
 
     </div>
 
 </section>
 
+
+<!-- ========================================= -->
 <!-- ANIMAL -->
+<!-- ========================================= -->
+
 <section class="container">
 
-<div class="card shadow-lg border-0 rounded-4 mb-5">
+    <div class="card shadow-lg border-0 rounded-4 mb-5">
 
-<div class="row g-0">
+        <div class="row g-0">
 
-<div class="col-lg-5">
+            <div class="col-lg-5">
 
-    {% if animal.foto1 and animal.foto1.name %}
-        <img src="{{ animal.foto1.url }}"
-             class="img-fluid rounded-start h-100"
-             style="object-fit:cover;">
-    {% else %}
-        <img src="https://via.placeholder.com/700x600?text=Sem+Foto"
-             class="img-fluid rounded-start h-100"
-             style="object-fit:cover;">
-    {% endif %}
+                {% if animal.foto1 and animal.foto1.name %}
 
-</div>
+                    <img
+                        src="{{ animal.foto1.url }}"
+                        class="img-fluid rounded-start h-100"
+                        style="object-fit:cover;">
 
-<div class="col-lg-7">
+                {% else %}
 
-<div class="card-body p-5">
+                    <img
+                        src="https://via.placeholder.com/700x600"
+                        class="img-fluid rounded-start h-100"
+                        style="object-fit:cover;">
 
-    <span class="badge bg-success mb-3">
-        {{ animal.get_status_display }}
-    </span>
+                {% endif %}
 
-    <h2>
-        {% if animal.tipo == 'CAO' %} 🐶 {% else %} 🐱 {% endif %}
-        {{ animal.nome }}
-    </h2>
+            </div>
 
-    <p class="text-muted">
-        {{ animal.get_sexo_display }} • {{ animal.idade }} ano{{ animal.idade|pluralize }} • {{ animal.get_porte_display }}
-    </p>
+            <div class="col-lg-7">
 
-    <p>
-        {{ animal.descricao|default:"Sem descrição disponível." }}
-    </p>
+                <div class="card-body p-5">
 
-    <hr>
+                    <span class="badge bg-success mb-3">
+                        {{ animal.get_status_display }}
+                    </span>
 
-    <div class="row">
+                    <h2>
 
-        <div class="col-md-6 mb-3">
-            <strong>Energia:</strong><br>
-            {{ animal.get_nivel_energia_display|default:"Não informado" }}
-        </div>
+                        {% if animal.tipo == 'CAO' %}
+                            🐶
+                        {% else %}
+                            🐱
+                        {% endif %}
 
-        <div class="col-md-6 mb-3">
-            <strong>Espaço:</strong><br>
-            {{ animal.get_necessidade_espaco_display|default:"Não informado" }}
-        </div>
+                        {{ animal.nome }}
 
-        <div class="col-md-6 mb-3">
-            <strong>Crianças:</strong><br>
-            {{ animal.get_convive_criancas_display|default:"Não informado" }}
-        </div>
+                    </h2>
 
-        <div class="col-md-6 mb-3">
-            <strong>Outros animais:</strong><br>
-            {{ animal.get_convive_animais_display|default:"Não informado" }}
+                    <p class="text-muted">
+
+                        {{ animal.get_sexo_display }}
+                        •
+                        {{ animal.idade }} ano{{ animal.idade|pluralize }}
+                        •
+                        {{ animal.get_porte_display }}
+
+                    </p>
+
+                    <p>
+                        {{ animal.descricao }}
+                    </p>
+
+                    <hr>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Energia</strong><br>
+                            {{ animal.get_nivel_energia_display }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Espaço</strong><br>
+                            {{ animal.get_necessidade_espaco_display }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Crianças</strong><br>
+                            {{ animal.get_convive_criancas_display }}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Outros animais</strong><br>
+                            {{ animal.get_convive_animais_display }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 </section>
 
+
+<!-- ========================================= -->
 <!-- FORMULÁRIO -->
+<!-- ========================================= -->
+
 <section class="container pb-5">
 
 <div class="row justify-content-center">
@@ -201,148 +256,362 @@
 
 {% csrf_token %}
 
-<h3 class="mb-4">👤 Seus dados</h3>
+<!-- DADOS -->
+
+<h3 class="mb-4">
+    👤 Seus dados
+</h3>
 
 <div class="row g-3">
 
-<div class="col-md-6">
-<label class="form-label">Nome completo</label>
-<input type="text" name="nome" class="form-control" required>
+    <div class="col-md-6">
+        <label class="form-label">
+            Nome completo
+        </label>
+
+        <input
+            type="text"
+            name="nome"
+            class="form-control"
+            required>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">
+            CPF
+        </label>
+
+        <input
+            type="text"
+            name="cpf"
+            class="form-control"
+            required>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">
+            E-mail
+        </label>
+
+        <input
+            type="email"
+            name="email"
+            class="form-control"
+            required>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">
+            Telefone
+        </label>
+
+        <input
+            type="text"
+            name="telefone"
+            class="form-control"
+            required>
+    </div>
+
 </div>
 
-<div class="col-md-6">
-<label class="form-label">CPF</label>
-<input type="text" name="cpf" class="form-control" required>
-</div>
-
-<div class="col-md-6">
-<label class="form-label">E-mail</label>
-<input type="email" name="email" class="form-control" required>
-</div>
-
-<div class="col-md-6">
-<label class="form-label">Telefone</label>
-<input type="text" name="telefone" class="form-control" required>
-</div>
-
-</div>
 
 <hr class="my-5">
 
-<h3 class="mb-4">🏠 Sua moradia</h3>
+
+<!-- MORADIA -->
+
+<h3 class="mb-4">
+    🏠 Sua moradia
+</h3>
 
 <div class="row g-3">
 
-<div class="col-md-4">
-<label class="form-label">Tipo de residência</label>
-<select name="residencia" class="form-select">
-    <option value="">Selecione</option>
-    <option>Casa</option>
-    <option>Apartamento</option>
-    <option>Chácara</option>
-</select>
+    <div class="col-md-4">
+
+        <label class="form-label">
+            Residência
+        </label>
+
+        <select name="residencia"
+                class="form-select">
+
+            <option>Casa</option>
+            <option>Apartamento</option>
+            <option>Chácara</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label class="form-label">
+            Possui quintal?
+        </label>
+
+        <select name="quintal"
+                class="form-select">
+
+            <option>Sim</option>
+            <option>Não</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label class="form-label">
+            Possui crianças?
+        </label>
+
+        <select name="criancas"
+                class="form-select">
+
+            <option>Sim</option>
+            <option>Não</option>
+
+        </select>
+
+    </div>
+
 </div>
 
-<div class="col-md-4">
-<label class="form-label">Possui quintal?</label>
-<select name="quintal" class="form-select">
-    <option>Selecione</option>
-    <option>Sim</option>
-    <option>Não</option>
-</select>
-</div>
-
-<div class="col-md-4">
-<label class="form-label">Possui crianças?</label>
-<select name="criancas" class="form-select">
-    <option>Selecione</option>
-    <option>Sim</option>
-    <option>Não</option>
-</select>
-</div>
-
-</div>
 
 <hr class="my-5">
 
-<h3 class="mb-4">🐾 Experiência</h3>
+
+<!-- EXPERIÊNCIA -->
+
+<h3 class="mb-4">
+    🐾 Experiência
+</h3>
 
 <div class="row g-3">
 
-<div class="col-md-6">
-<label class="form-label">Já teve animais?</label>
-<select name="experiencia" class="form-select">
-    <option>Nunca</option>
-    <option>Pouca experiência</option>
-    <option>Muita experiência</option>
-</select>
+    <div class="col-md-6">
+
+        <label class="form-label">
+            Já teve animais?
+        </label>
+
+        <select name="experiencia"
+                class="form-select">
+
+            <option>Nunca</option>
+            <option>Pouca experiência</option>
+            <option>Muita experiência</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <label class="form-label">
+            Tempo disponível
+        </label>
+
+        <select name="tempo"
+                class="form-select">
+
+            <option>Baixo</option>
+            <option>Médio</option>
+            <option>Alto</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <label class="form-label">
+            Possui outros animais?
+        </label>
+
+        <select name="outros_animais"
+                class="form-select">
+
+            <option>Não</option>
+            <option>Sim</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <label class="form-label">
+            Perfil desejado
+        </label>
+
+        <select name="perfil"
+                class="form-select">
+
+            <option>Calmo</option>
+            <option>Moderado</option>
+            <option>Ativo</option>
+
+        </select>
+
+    </div>
+
 </div>
 
-<div class="col-md-6">
-<label class="form-label">Tempo disponível</label>
-<select name="tempo" class="form-select">
-    <option>Baixo</option>
-    <option>Médio</option>
-    <option>Alto</option>
-</select>
-</div>
-
-<div class="col-md-6">
-<label class="form-label">Possui outros animais?</label>
-<select name="outros_animais" class="form-select">
-    <option>Não</option>
-    <option>Sim</option>
-</select>
-</div>
-
-<div class="col-md-6">
-<label class="form-label">Perfil desejado</label>
-<select name="perfil" class="form-select">
-    <option>Calmo</option>
-    <option>Moderado</option>
-    <option>Ativo</option>
-</select>
-</div>
-
-</div>
 
 <hr class="my-5">
 
-<h3 class="mb-4">❤️ Conte sobre você</h3>
 
-<textarea name="descricao" class="form-control" rows="5"></textarea>
+<!-- DESCRIÇÃO -->
 
-<!-- COMPATIBILIDADE IA -->
+<h3 class="mb-4">
+    ❤️ Conte sobre você
+</h3>
+
+<textarea
+    name="descricao"
+    class="form-control"
+    rows="5"
+    placeholder="Conte sobre sua rotina, família, experiência com animais e por que deseja adotar."></textarea>
+
+
+<!-- ========================================= -->
+<!-- RESULTADO IA -->
+<!-- ========================================= -->
+
 {% if compatibilidade %}
 
-<div class="alert alert-info mt-4">
+<div class="card shadow mt-5">
 
-    <h5>🤖 Resultado da IA</h5>
+    <div class="card-header">
 
-    <pre style="white-space: pre-wrap;">{{ compatibilidade }}</pre>
+        <h4 class="mb-0">
+            🤖 Avaliação Inteligente
+        </h4>
+
+    </div>
+
+    <div class="card-body">
+
+        {% if compatibilidade.status == "APROVADO" %}
+
+            <div class="alert alert-success">
+                <strong>
+                    ✅ APROVADO
+                </strong>
+            </div>
+
+        {% elif compatibilidade.status == "APROVADO_COM_RESTRICOES" %}
+
+            <div class="alert alert-warning">
+                <strong>
+                    ⚠️ APROVADO COM RESTRIÇÕES
+                </strong>
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-danger">
+                <strong>
+                    ❌ REPROVADO
+                </strong>
+            </div>
+
+        {% endif %}
+
+
+        <h5>
+            Compatibilidade
+        </h5>
+
+        <div class="progress mb-4"
+             style="height:30px;">
+
+            <div class="progress-bar"
+
+                 style="width:{{ compatibilidade.compatibilidade }}%;">
+
+                {{ compatibilidade.compatibilidade }}%
+
+            </div>
+
+        </div>
+
+
+        <h5>
+            🚨 Nível de risco
+        </h5>
+
+        <p>
+            {{ compatibilidade.risco }}
+        </p>
+
+
+        <h5>
+            📋 Justificativa
+        </h5>
+
+        <p>
+            {{ compatibilidade.justificativa }}
+        </p>
+
+
+        <h5>
+            💡 Recomendação
+        </h5>
+
+        <div class="alert alert-light">
+
+            {{ compatibilidade.recomendacao }}
+
+        </div>
+
+    </div>
 
 </div>
 
 {% else %}
 
-<div class="card bg-light border-0 p-4 mt-4 mb-4">
+<div class="card bg-light p-4 mt-5">
 
-    <h4>🤖 Compatibilidade IA</h4>
+    <h4>
+        🤖 Compatibilidade Inteligente
+    </h4>
 
-    <div class="progress">
-        <div class="progress-bar" style="width:0%"></div>
-    </div>
+    <p class="text-muted">
+
+        Nossa Inteligência Artificial analisará:
+
+    </p>
+
+    <ul>
+
+        <li>🐾 Perfil comportamental</li>
+        <li>🏠 Ambiente</li>
+        <li>👶 Crianças</li>
+        <li>🐕 Outros animais</li>
+        <li>⏰ Tempo disponível</li>
+        <li>❤️ Compatibilidade emocional</li>
+        <li>🛡️ Riscos de adoção inadequada</li>
+
+    </ul>
 
 </div>
 
 {% endif %}
 
-<!-- BOTÕES -->
-<div class="d-flex gap-3">
 
-<button type="submit" class="btn btn-principal flex-fill">
-❤️ Enviar Solicitação
-</button>
+<!-- BOTÃO -->
+
+<div class="d-flex gap-3 mt-5">
+
+    <button
+        type="submit"
+        class="btn btn-principal flex-fill">
+
+        ❤️ Enviar Solicitação
+
+    </button>
 
 </div>
 
@@ -356,19 +625,25 @@
 
 </section>
 
+
+<!-- ========================================= -->
 <!-- FOOTER -->
+<!-- ========================================= -->
+
 <footer>
 
-<div class="container text-center">
+    <div class="container text-center">
 
-<img src="{% static 'logo2.png' %}" alt="Logo">
+        <img
+            src="{% static 'logo2.png' %}"
+            alt="Logo">
 
-</div>
+    </div>
 
 </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>
